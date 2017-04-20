@@ -32,6 +32,7 @@ object List {
 
   def fill[A](n: Int, a: A): List[A] = ???
 
+//  ch03 - Q2
   def tail[A](l: List[A]): List[A] = {
     l match {
       case Nil => Nil
@@ -39,11 +40,13 @@ object List {
     }
   }
 
+//  ch03 - Q3
   def drop[A](n: Int, l: List[A]): List[A] = {
     if (n == 0) l
     else drop(n - 1, tail(l))
   }
 
+//  ch03 - Q4
   def dropWhile[A](l: List[A])(f: A => Boolean): List[A] = {
     l match {
       case Nil => Nil
@@ -51,6 +54,7 @@ object List {
     }
   }
 
+//  ch03 - Q5
   def setHead[A](l: List[A], x: A): List[A] = {
     l match {
       case Nil => Nil
@@ -65,6 +69,7 @@ object List {
     }
   }
 
+//  ch03 - Q6
   def init[A](l: List[A]): List[A] = {
     l match {
       case Nil => Nil
@@ -84,9 +89,11 @@ object List {
 
   def product2(l: List[Int]) = foldRight(l, 1)(_ * _)
 
+//  ch03 - Q9
   def length[A](l: List[A]): Int = foldRight(l, 0)((_, acc) => acc + 1)
 
 
+//  ch03 - Q10
   def foldLeft[A, B](l: List[A], z: B)(f: (B, A) => B): B = {
     l match {
       case Nil => z
@@ -94,34 +101,42 @@ object List {
     }
   }
 
+//  ch03 - Q11
   def sum3(l: List[Int]) = foldLeft(l, 0)(_ + _)
-
   def product3(l: List[Int]) = foldLeft(l, 1)(_ * _)
-
   def length2[A](l: List[A]): Int = foldLeft(l, 0)((acc, _) => acc + 1)
 
   //  TODO why replacing h with underscore doesn't work
+//  ch03 - Q12
   def reverse[A](l: List[A]): List[A] = foldLeft(l, List[A]())((acc, h) => Cons(h, acc))
 
+//  ch03 - Q13
   //    def foldLeft2[A, B](l: List[A], z:B)(f:(B,A) => B): B = foldRight(l, z)()
   //  def foldRight2[A, B](l: List[A], z: B)(f: (A,B) => B): B = foldLeft(l, z)(f)
 
-  def append2[A](a1: List[A], a2: List[A]): List[A] = foldLeft(a2, a1)((acc, elem) => Cons(elem, acc))
+//  ch03 - Q14
+  def append2[A](a1: List[A], a2: List[A]): List[A] = foldRight(a1, a2)((elem, acc) => Cons(elem, acc))
 
+//  ch03 - Q15
   def concatenate[A](l: List[List[A]]): List[A] = {
     foldRight(l, List[A]()) { (elem, acc) =>
       foldRight(elem, acc)((ielem, iacc) => Cons(ielem, iacc))
     }
   }
 
+//  ch03 - Q18
   def map[A, B](l: List[A])(f: A => B): List[B] = foldRight(l, List[B]())((elem, acc) => Cons(f(elem), acc))
 
+//  ch03 - Q19
   def filter[A](l: List[A])(f: A => Boolean): List[A] = foldRight(l, List[A]())((elem, acc) => if (f(elem)) Cons(elem, acc) else acc)
 
+//  ch03 - Q20
   def flatMap[A, B](l: List[A])(f: A => List[B]): List[B] = foldRight(l, List[B]())((elem, acc) => append(f(elem), acc))
 
+//  Q21
   def filterUsingFlatMap[A](l: List[A])(f: A => Boolean): List[A] = flatMap(l)(x => if(f(x)) List(x) else Nil)
 
+//  Q22
   def addPairWise(l1: List[Int], l2: List[Int]): List[Int] = {
     (l1, l2) match {
       case (Nil, _) => Nil
@@ -130,6 +145,7 @@ object List {
     }
   }
 
+//  Q23
   def zipWith[A,B,C](l1: List[A], l2: List[B])(f:(A,B) => C): List[C] = {
     (l1, l2) match {
       case (Nil, _) => Nil
@@ -138,16 +154,32 @@ object List {
     }
   }
 
-  def addCorrespondingElements[A](l1: List[A], l2: List[A]): List[A] = ???
-
+//  Q24
   def hasSubSequence[A](l: List[A], sub: List[A]): Boolean = ???
 
 }
 
 object ListDemo extends App {
-  val example = Cons(1, Cons(2, Cons(3, Nil)))
-  val example2 = List(2,4,6,7,8,9)
-  println(List.zipWith(example, example)(_ * _))
+  import List._
+
+//  val example = Cons(1, Cons(2, Cons(3, Nil)))
+//  val example2 = List(2,4,6,7,8,9)
+//  println(List.zipWith(example, example)(_ * _))
+//
+//  // ch03 - Q8
+//  val x = foldRight(List(1, 2, 3), Nil: List[Int])(Cons(_, _))
+//  println(x)
+
+//  println(append2(List(1, 2, 3), List(4, 5, 6)))
+//  println(append(List(1, 2, 3), List(4, 5, 6)))
+
+//  println(concatenate(List(List(1, 6), List(2, 5), List(3, 4))))
+
+//  println(map(List(1, 2, 3))(x => x + 1))
+//  println(map(List(1, 2, 3))(x => x.toString))
+
+//  println(filter(List(1, 2, 3, 4, 5, 6))(x => x % 2 == 0))
+//  println(filterUsingFlatMap(List(1, 2, 3, 4, 5, 6))(x => x % 2 == 0))
 
 
 }

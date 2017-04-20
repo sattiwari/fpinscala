@@ -20,6 +20,7 @@ object PolymorphicFunctionsDemo extends App {
   println(binarySearch(Array(1.0,2.0,3.0,4.0,5.0), 1.0, (x: Double, y: Double) => x > y))
   println(binarySearch(Array("a", "b", "c", "d", "e"), "a", (x: String, y: String) => x > y))
 
+//  ch01 - Q2
   def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = {
     def loop(n: Int): Boolean = {
       if(n==0) true

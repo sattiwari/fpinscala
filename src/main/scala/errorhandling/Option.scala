@@ -71,7 +71,7 @@ object Option1 {
     a.foldRight[Option[List[B]]](Some(Nil))((elem, acc) => map2(f(elem), acc)(_ :: _))
   }
 
-  
+
   def sequenceViaTraverse[A](a: List[Option[A]]): Option[List[A]] = traverse(a)(x => x)
 
 }

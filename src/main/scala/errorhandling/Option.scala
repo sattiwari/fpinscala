@@ -1,7 +1,7 @@
 package errorhandling
 
 // hide std lib Option & Either, since we are writing our own
-import scala.{Option => _, Either => _,_}
+import scala.{Either => _, Option => _, _}
 
 sealed trait Option[+A] {
   def map[B](f: A => B): Option[B] = {
@@ -30,13 +30,24 @@ case class Some[+A](get: A) extends Option[A]
 case object None extends Option[Nothing]
 
 object Option1 {
-
   private def mean(xs: Seq[Double]): scala.Option[Double] = {
     if(xs.nonEmpty) Some(xs.sum / xs.length)
     else scala.None
   }
 
+//  Q2
   def variance(xs: Seq[Double]): scala.Option[Double] = mean(xs) flatMap {m => mean(xs.map(x => math.pow(x - m, 2)))}
+
+//  Q3
+  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A,B) => C): Option[C] = a.flatMap(ai => b.map(bi => f(ai,bi)))
+
+//  Q4
+  import errorhandling.Pattern._
+  def bothMatch_2(pat: String, pat2: String, s: String): Option[Boolean] = {
+    map2(mkMatcher(pat), mkMatcher(pat2))((f, g) => f(s) && g(s))
+  }
+
+
 
 }
 

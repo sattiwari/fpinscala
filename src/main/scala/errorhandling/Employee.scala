@@ -15,7 +15,7 @@ object Driver extends App {
       .getOrElse("Default Dept")
 }
 
-object Pattern {
+object Pattern1 {
   import java.util.regex._
   def pattern(s: String): Option[Pattern] =
     try {

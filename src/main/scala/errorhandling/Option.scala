@@ -29,6 +29,17 @@ sealed trait Option[+A] {
 case class Some[+A](get: A) extends Option[A]
 case object None extends Option[Nothing]
 
+object Option1 {
+
+  private def mean(xs: Seq[Double]): scala.Option[Double] = {
+    if(xs.nonEmpty) Some(xs.sum / xs.length)
+    else scala.None
+  }
+
+  def variance(xs: Seq[Double]): scala.Option[Double] = mean(xs) flatMap {m => mean(xs.map(x => math.pow(x - m, 2)))}
+
+}
+
 object OptionOps extends App {
 
   var x = Option(4)

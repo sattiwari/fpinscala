@@ -76,6 +76,24 @@ trait Stream[+A] {
     foldRight(true)((a, b) => p(a) && b)
   }
 
+  def map[B](p: A => B): Stream[B] = {
+    foldRight(empty[B])((a, b) => cons(p(a), b))
+  }
+
+  def filter(p: A => Boolean): Stream[A] = {
+    foldRight(empty[A])((h, b) =>
+      if(p(h)) cons(h, b)
+      else b)
+  }
+
+  def append[B >: A](s: => Stream[B]): Stream[B] = {
+    foldRight(s)((a, b) => cons(a, b))
+  }
+
+  def flatMap[B](p: A => Stream[B]): Stream[B] = {
+    foldRight(empty[B])((a, b) => p(a) append b)
+  }
+
 }
 
 case object Empty extends Stream[Nothing]
@@ -97,7 +115,7 @@ object Stream {
 }
 
 object StreamOps extends App {
-  val s = Stream(1, 2, 3)
+  val s = Stream(1, 2, 3, 4, 5, 6, 7)
 
 //  println(s.toListRecursive)
 //  println(s.toList)
@@ -105,11 +123,16 @@ object StreamOps extends App {
 
 //  println(s.take(2).toList)
 
-  println(s.takeWhile(x => x %2  != 0).toList)
-  println(s.takeWhile2(x => x %2  != 0).toList)
+//  println(s.takeWhile(x => x %2  != 0).toList)
+//  println(s.takeWhile2(x => x %2  != 0).toList)
 
 //  println(s.foldRight(1)(_ + _))
 
 //  println(s.exists(x => x%2 == 0))
 //  println(s.forall(x => x%2 == 0))
+
+//  println(s.map(_ + 1).toList)
+//  println(s.filter(_ %2 != 0).toList)
+//  println(s.append(Stream(8.0, 9.0)).toList)
+//  println(s.flatMap(x => Stream(8.0, 9.0)).toList)
 }

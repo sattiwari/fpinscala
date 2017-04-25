@@ -61,6 +61,10 @@ trait Stream[+A] {
     }
   }
 
+  def exists(p: A => Boolean): Boolean = {
+    foldRight(false)((a, b) => p(a) || b)
+  }
+
 }
 
 case object Empty extends Stream[Nothing]

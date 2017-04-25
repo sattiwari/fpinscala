@@ -65,6 +65,10 @@ trait Stream[+A] {
     foldRight(false)((a, b) => p(a) || b)
   }
 
+  def forall(p: A => Boolean): Boolean = {
+    foldRight(true)((a, b) => p(a) && b)
+  }
+
 }
 
 case object Empty extends Stream[Nothing]
@@ -97,4 +101,7 @@ object StreamOps extends App {
 //  println(s.takeWhile(x => x %2  != 0).toList)
 
 //  println(s.foldRight(1)(_ + _))
+
+  println(s.exists(x => x%2 == 0))
+  println(s.forall(x => x%2 == 0))
 }

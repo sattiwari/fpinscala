@@ -54,6 +54,13 @@ trait Stream[+A] {
     }
   }
 
+//  using foldRight
+  def takeWhile2(p: A => Boolean): Stream[A] = {
+    foldRight(empty[A])((h, b) =>
+      if(p(h)) cons(h, b)
+      else empty)
+  }
+
   def foldRight[B](z: => B)(f: (A, => B) => B): B = {
     this match {
       case Cons(h, t) => f(h(), t().foldRight(z)(f))
@@ -98,10 +105,11 @@ object StreamOps extends App {
 
 //  println(s.take(2).toList)
 
-//  println(s.takeWhile(x => x %2  != 0).toList)
+  println(s.takeWhile(x => x %2  != 0).toList)
+  println(s.takeWhile2(x => x %2  != 0).toList)
 
 //  println(s.foldRight(1)(_ + _))
 
-  println(s.exists(x => x%2 == 0))
-  println(s.forall(x => x%2 == 0))
+//  println(s.exists(x => x%2 == 0))
+//  println(s.forall(x => x%2 == 0))
 }

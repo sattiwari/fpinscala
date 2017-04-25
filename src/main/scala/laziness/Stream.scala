@@ -2,7 +2,6 @@ package laziness
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
-
 import Stream._
 
 trait Stream[+A] {
@@ -55,6 +54,13 @@ trait Stream[+A] {
     }
   }
 
+  def foldRight[B](z: => B)(f: (A, => B) => B): B = {
+    this match {
+      case Cons(h, t) => f(h(), t().foldRight(z)(f))
+      case _ => z
+    }
+  }
+
 }
 
 case object Empty extends Stream[Nothing]
@@ -85,4 +91,6 @@ object StreamOps extends App {
 //  println(s.take(2).toList)
 
 //  println(s.takeWhile(x => x %2  != 0).toList)
+
+//  println(s.foldRight(1)(_ + _))
 }

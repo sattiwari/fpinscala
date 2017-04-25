@@ -3,6 +3,7 @@ package laziness
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 
+import Stream._
 
 trait Stream[+A] {
   def toListRecursive: List[A] = {
@@ -55,7 +56,18 @@ trait Stream[+A] {
     go(n, this, Empty)
   }
 
-  def takeWhile(p: A => Boolean): Stream[A] = ???
+  def take2(n: Int): Stream[A] = this match {
+    case Cons(h, t) if n > 1 => cons(h(), t().take(n - 1))
+    case Cons(h, _) if n == 1 => cons(h(), empty)
+    case _ => empty
+  }
+
+  def takeWhile(p: A => Boolean): Stream[A] = {
+    this match {
+      case Cons(h, t) if (p(h)) => cons(h(), t().takeWhile(p))
+      case _ => empty
+    }
+  }
 
 }
 

@@ -41,7 +41,19 @@ trait Stream[+A] {
     go(this)
   }
 
-  def take(n: Int): Stream[A] = ???
+  def take(n: Int): Stream[A] = {
+    @tailrec
+    def go(n: Int, s: Stream[A], acc: Stream[A]): Stream[A] = {
+      (n, s, acc) match {
+        case (0, _, _) => acc
+
+        case (_, Cons(h, t), _) =>
+          go(n-1, t(), Cons(h, () => acc))
+      }
+    }
+
+    go(n, this, Empty)
+  }
 
   def takeWhile(p: A => Boolean): Stream[A] = ???
 

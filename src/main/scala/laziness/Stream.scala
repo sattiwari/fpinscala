@@ -19,7 +19,7 @@ trait Stream[+A] {
     def go(s: Stream[A], acc: List[A]): List[A] = {
       s match {
         case Cons(h, t) => go(t(), h() :: acc)
-        case _ => Nil
+        case _ => acc
       }
     }
 
@@ -42,21 +42,7 @@ trait Stream[+A] {
     go(this)
   }
 
-  def take(n: Int): Stream[A] = {
-    @tailrec
-    def go(n: Int, s: Stream[A], acc: Stream[A]): Stream[A] = {
-      (n, s, acc) match {
-        case (0, _, _) => acc
-
-        case (_, Cons(h, t), _) =>
-          go(n-1, t(), Cons(h, () => acc))
-      }
-    }
-
-    go(n, this, Empty)
-  }
-
-  def take2(n: Int): Stream[A] = this match {
+  def take(n: Int): Stream[A] = this match {
     case Cons(h, t) if n > 1 => cons(h(), t().take(n - 1))
     case Cons(h, _) if n == 1 => cons(h(), empty)
     case _ => empty
@@ -64,7 +50,7 @@ trait Stream[+A] {
 
   def takeWhile(p: A => Boolean): Stream[A] = {
     this match {
-      case Cons(h, t) if (p(h)) => cons(h(), t().takeWhile(p))
+      case Cons(h, t) if (p(h())) => cons(h(), t().takeWhile(p))
       case _ => empty
     }
   }
@@ -87,4 +73,16 @@ object Stream {
     else cons(as.head, apply(as.tail: _*))
   }
 
+}
+
+object StreamOps extends App {
+  val s = Stream(1, 2, 3)
+
+//  println(s.toListRecursive)
+//  println(s.toList)
+//  println(s.toListFast)
+
+//  println(s.take(2).toList)
+
+//  println(s.takeWhile(x => x %2  != 0).toList)
 }

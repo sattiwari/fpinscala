@@ -1,6 +1,6 @@
 package state
 
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable._
 
 trait RNG {
   def nextInt: (Int, RNG)
@@ -37,6 +37,14 @@ object RNG {
       (f(a, b), r2)
   }
 
+  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = {
+    rng =>
+      fs.foldRight((List.empty[A], rng)){ (elem, acc) =>
+        val x = elem(acc._2)
+        (x._1 :: acc._1, x._2)
+      }
+  }
+
   def nonNegativeInt(rng: RNG): (Int, RNG) = {
     val (i, r) = rng.nextInt
     (if (i < 0) -(i + 1) else i, r)
@@ -56,10 +64,6 @@ object RNG {
     val (i, r1) = nonNegativeInt(rng)
     val (d, r2) = double(r1)
     ((i, d), r2)
-  }
-
-  def intDoubleViaMap2 = {
-    map2(nonNegativeInt, double)(_)
   }
 
   def doubleInt(rng: RNG): ((Double,Int), RNG) = {
@@ -98,10 +102,15 @@ object RNGOps extends App {
     override def nextInt: (Int, RNG) = s.nextInt
   }
 
-  val nn = nonNegativeInt(rng)
-//  println(nn)
+//  val nn = nonNegativeInt(rng)
 
-  val x = map(rng)(_.toString)
+//  val x = unit(1)(rng)
+//  val y = unit(2)(rng)
+//  val z = unit(3)(rng)
+//  val rs = sequence(List(unit(1), unit(2), unit(3)))(rng)._1
+//  println(rs)
+
+
 
 
 

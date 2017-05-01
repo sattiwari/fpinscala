@@ -17,6 +17,26 @@ object RNG {
     }
   }
 
+  type Rand[+A] = RNG => (A, RNG)
+
+  val int: Rand[Int] = _.nextInt
+
+  def unit[A](a: A): Rand[A] =
+    rng => (a, rng)
+
+  def map[A, B](s: Rand[A])(f: A => B): Rand[B] = {
+    rng =>
+      val (a, r) = s(rng)
+      (f(a), r)
+  }
+
+  def map2[A, B, C](ran1: Rand[A], ran2: Rand[B])(f: (A, B) => C): Rand[C] = {
+    rng =>
+      val (a, r) = ran1(rng)
+      val (b, r2) = ran2(r)
+      (f(a, b), r2)
+  }
+
   def nonNegativeInt(rng: RNG): (Int, RNG) = {
     val (i, r) = rng.nextInt
     (if (i < 0) -(i + 1) else i, r)
@@ -28,10 +48,18 @@ object RNG {
     (i.toDouble / max, r)
   }
 
+  def _double(rNG: RNG) = {
+    map(nonNegativeInt)(_.toDouble / (Int.MaxValue + 1))
+  }
+
   def intDouble(rng: RNG): ((Int,Double), RNG) = {
     val (i, r1) = nonNegativeInt(rng)
     val (d, r2) = double(r1)
     ((i, d), r2)
+  }
+
+  def intDoubleViaMap2 = {
+    map2(nonNegativeInt, double)(_)
   }
 
   def doubleInt(rng: RNG): ((Double,Int), RNG) = {
@@ -60,5 +88,21 @@ object RNG {
     }
     loop(count, rng)
   }
+}
+
+object RNGOps extends App {
+  import RNG._
+
+  val s = Simple(1L)
+  val rng = new RNG {
+    override def nextInt: (Int, RNG) = s.nextInt
+  }
+
+  val nn = nonNegativeInt(rng)
+//  println(nn)
+
+  val x = map(rng)(_.toString)
+
+
 
 }

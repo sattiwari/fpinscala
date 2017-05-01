@@ -92,6 +92,11 @@ object RNG {
     }
     loop(count, rng)
   }
+
+  def intsViaSequence(count: Int) = {
+    sequence(List.fill(count)(int))
+  }
+
 }
 
 object RNGOps extends App {

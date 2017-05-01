@@ -37,6 +37,12 @@ object RNG {
       (f(a, b), r2)
   }
 
+  def flatMap[A, B](f: Rand[A])(g: A => Rand[B]): Rand[B] = {
+    rng =>
+      val  (a, r) = f(rng)
+      g(a)(r)
+  }
+
   def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = {
     rng =>
       fs.foldRight((List.empty[A], rng)){ (elem, acc) =>
@@ -48,6 +54,12 @@ object RNG {
   def nonNegativeInt(rng: RNG): (Int, RNG) = {
     val (i, r) = rng.nextInt
     (if (i < 0) -(i + 1) else i, r)
+  }
+
+  def positiveIntUsingFlatMap = {
+    flatMap(int){ i =>
+      if (i != Int.MinValue) unit(i) else int
+    }
   }
 
   def double(rng: RNG): (Double, RNG) = {

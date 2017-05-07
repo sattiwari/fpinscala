@@ -24,6 +24,17 @@ case class State[S, +A](run: S => (A, S)) {
     })
   }
 
+  def get: State[S, S] = State(s => (s, s))
+
+  def set(s: S): State[S, S] = State(s => (s,s))
+
+  def modify[S](f: S => S): State[S, Unit] = {
+    for {
+      s <- get
+      _ <- set(f(s))
+    } yield ()
+  }
+
 }
 
 object State {
